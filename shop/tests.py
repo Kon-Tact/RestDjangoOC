@@ -42,6 +42,19 @@ class TestCategory(ShopAPITestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(Category.objects.count(), category_count)
 
+    def test_detail(self):
+    # Nous utilisons l'url de détail
+        url_detail = reverse('category-detail',kwargs={'pk': self.category.pk})
+        response = self.client.get(url_detail)
+    # Nous vérifions également le status code de retour ainsi que les données reçues
+        self.assertEqual(response.status_code, 200)
+        excepted = {
+            'id': self.category.pk,
+            'name': self.category.name,
+            'products': self.get_product_detail_data(self.category.products.filter(active=True)),
+        }
+        self.assertEqual(excepted, response.json())
+
 
 class TestProduct(ShopAPITestCase):
 
